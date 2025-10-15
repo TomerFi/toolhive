@@ -3,6 +3,9 @@ name: Build and Sign Image
 on:
   workflow_call:
 
+env:
+  BASE_IMAGE: "registry.redhat.io/ubi10:latest"
+
 jobs:
   image-build-and-publish:
     name: Build and Publish Main Image
@@ -231,8 +234,8 @@ jobs:
             TAGS="$TAGS -t latest"
           fi
           
-          KO_DOCKER_REPO=$BASE_REPO ko build --platform=linux/amd64,linux/arm64 --bare $TAGS ./cmd/thv-operator \
-            --image-label=org.opencontainers.image.source=https://github.com/stacklok/toolhive,org.opencontainers.image.title="toolhive-operator",org.opencontainers.image.vendor=Stacklok
+          KO_DOCKER_REPO=$BASE_REPO KO_DEFAULTBASEIMAGE=$BASE_IMAGE ko build --platform=linux/amd64,linux/arm64 --image-user=1001 --bare $TAGS ./cmd/thv-operator \
+            --image-label=org.opencontainers.image.source=https://github.com/stacklok/toolhive,org.opencontainers.image.title="toolhive-operator",org.opencontainers.image.vendor=Stacklok,name=toolhive-operator,vendor=Stacklok,maintainer=Stacklok
 
       - name: Sign Image with Cosign
         # This step uses the identity token to provision an ephemeral certificate
@@ -311,8 +314,8 @@ jobs:
             TAGS="$TAGS -t latest"
           fi
           
-          KO_DOCKER_REPO=$BASE_REPO ko build --platform=linux/amd64,linux/arm64 --bare $TAGS ./cmd/thv-proxyrunner \
-            --image-label=org.opencontainers.image.source=https://github.com/stacklok/toolhive,org.opencontainers.image.title="toolhive-proxyrunner",org.opencontainers.image.vendor=Stacklok
+          KO_DOCKER_REPO=$BASE_REPO KO_DEFAULTBASEIMAGE=$BASE_IMAGE ko build --image-user=1001 --platform=linux/amd64,linux/arm64 --bare $TAGS ./cmd/thv-proxyrunner \
+            --image-label=org.opencontainers.image.source=https://github.com/stacklok/toolhive,org.opencontainers.image.title="toolhive-proxyrunner",org.opencontainers.image.vendor=Stacklok,name=toolhive-proxyrunner,vendor=Stacklok,maintainer=Stacklok
 
       - name: Sign Image with Cosign
         # This step uses the identity token to provision an ephemeral certificate

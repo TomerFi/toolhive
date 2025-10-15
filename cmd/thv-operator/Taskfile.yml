@@ -105,7 +105,16 @@ tasks:
   build-operator-image:
     desc: Build the operator image with ko
     cmds:
-      - ko build --local -B ./cmd/thv-operator
+      - ko build --local -B ./cmd/thv-operator --image-user=1001 --image-label name=toolhive-operator,vendor=Stacklok,maintainer=Stacklok
+    env:
+      KO_DEFAULTBASEIMAGE: registry.redhat.io/ubi10:latest
+
+  build-proxyrunner-image:
+    desc: Build the proxyrunner image with ko
+    cmds:
+      - ko build --local -B ./cmd/thv-proxyrunner --image-user=1001 --image-label name=toolhive-proxyrunner,vendor=Stacklok,maintainer=Stacklok
+    env:
+      KO_DEFAULTBASEIMAGE: registry.redhat.io/ubi10:latest
 
   operator-install-crds:
     desc: Install CRDs into the K8s cluster
